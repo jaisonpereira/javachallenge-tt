@@ -1,0 +1,85 @@
+package br.com.jaison.util;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+public class TesteWorks {
+
+	public static void main(String[] args) {
+		int[] test = { 7, 6, 4, -1, 1, 2 };
+		List<Integer[]> resultado = fourNumberSum(test, 16);
+
+		for (Integer[] integers : resultado) {
+			String init = "[ ";
+			for (int value : integers) {
+				init += "," + value;
+			}
+			init += " ]";
+
+			System.out.println(init);
+		}
+	}
+
+	public static void verificaLados(Integer initialValueIteration, int[] array, int targetSum,
+			List<Integer[]> resultado, Integer esquerdo, Integer direito, Integer secondIteration) {
+		Integer sum = array[initialValueIteration] + array[secondIteration] + array[esquerdo] + array[direito];
+
+		if (sum < targetSum) {
+			esquerdo++;
+		} else if (sum > targetSum) {
+			direito--;
+		} else {
+			Integer[] combination = { array[initialValueIteration], array[secondIteration], array[esquerdo],
+					array[direito] };
+			resultado.add(combination);
+
+			esquerdo++;
+			direito--;
+
+			while (esquerdo < direito && array[esquerdo] == array[esquerdo - 1]) {
+				esquerdo++;
+			}
+
+			while (esquerdo < direito && array[direito] == array[direito + 1]) {
+				direito--;
+			}
+		}
+	}
+
+	public static void secondVerification(Integer initialValueIteration, int[] array, int targetSum,
+			List<Integer[]> resultado) {
+		for (Integer secondIteration = initialValueIteration + 1; secondIteration < array.length
+				- 2; secondIteration++) {
+
+			if (secondIteration != initialValueIteration + 1 && array[secondIteration] == array[secondIteration - 1]) {
+				continue;
+			}
+
+			int esquerdo = secondIteration + 1;
+			int direito = array.length - 1;
+
+			while (esquerdo < direito) {
+				verificaLados(initialValueIteration, array, targetSum, resultado, esquerdo, direito, secondIteration);
+			}
+
+		}
+
+	}
+
+	public static List<Integer[]> fourNumberSum(int[] array, int targetSum) {
+		Arrays.sort(array);
+		List<Integer[]> resultado = new ArrayList<>();
+
+		for (Integer initialValueIteration = 0; initialValueIteration < array.length - 3; initialValueIteration++) {
+
+			if (initialValueIteration != 0 && array[initialValueIteration] == array[initialValueIteration - 1]) {
+				continue;
+			}
+			secondVerification(initialValueIteration, array, targetSum, resultado);
+
+		}
+		return resultado;
+	}
+
+}
